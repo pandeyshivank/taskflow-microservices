@@ -12,6 +12,7 @@ namespace UserMicroService.Services.Interfaces
         public Task<bool?> DeleteUserAsync(Guid id);
 
         public Task<UserResponseDTO?> GetUserByIdAsync(Guid id);
-       
+        public Task<LoginResponseDTO?> loginAsync(LoginRequestDTO request);
+
     }
 }

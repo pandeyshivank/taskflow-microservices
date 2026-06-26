@@ -13,6 +13,7 @@ namespace UserMicroService.UserRepositories.Interfaces
         public Task<User?> GetUserByIdAsync(Guid id);
         Task<User?> GetUserByEmailAsync(string email);
 
+      
 
 
     }

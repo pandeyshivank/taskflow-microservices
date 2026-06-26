@@ -4,6 +4,7 @@ using UserMicroService.Services;
 using UserMicroService.ModelDTOs;
 using UserMicroService.Services.Interfaces;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 namespace UserMicroService.Controllers
 {
     [Route("api/[controller]")]
@@ -15,7 +16,7 @@ namespace UserMicroService.Controllers
             _userService=userService;
         }
 
-
+        [Authorize]
         [Route("Create",Name ="CreateUser")]
         [HttpPost]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
@@ -26,7 +27,7 @@ namespace UserMicroService.Controllers
             var responce= await _userService.CreateUserAsync(request);
             return Ok(responce);
         }
-
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(400)]
@@ -40,7 +41,7 @@ namespace UserMicroService.Controllers
 
             return Ok(user);
         }
-
+        [Authorize]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -52,7 +53,7 @@ namespace UserMicroService.Controllers
             var responce = await _userService.UpdateUserAsync(request);
             return Ok(responce);
         }
-
+        [Authorize]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -64,5 +65,19 @@ namespace UserMicroService.Controllers
             return status;
 
         }
+        [ProducesResponseType(typeof(LoginResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [HttpPost]
+        [Route("Login", Name = "LoginUser")]
+        public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO request)
+        {
+            LoginResponseDTO responce = await _userService.loginAsync(request);
+            return Ok(responce);
+
+        }
+
+
+        
     }
 }

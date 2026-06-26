@@ -6,6 +6,13 @@ using UserMicroService.UserRepositories.Interfaces;
 using UserMicroService.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using UserMicroService.UserRepositories.Implementations;
+using System.Diagnostics.Eventing.Reader;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Azure;
 
 
 namespace UserMicroService.Services.Implementations
@@ -14,10 +21,12 @@ namespace UserMicroService.Services.Implementations
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper) 
+        private readonly IConfiguration _Configuration;
+        public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration configuration) 
         {
             _userRepository= userRepository;
             _mapper= mapper;
+            _Configuration= configuration;
 
 
         }
@@ -68,5 +77,60 @@ namespace UserMicroService.Services.Implementations
             UserResponseDTO responce = _mapper.Map<UserResponseDTO>(user);
             return responce;
         }
+        public async Task<LoginResponseDTO?> loginAsync(LoginRequestDTO request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+            if (user == null) throw new InvalidOperationException("user Not exist");
+           
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+            if (!isPasswordValid)
+            {
+                throw new InvalidOperationException("Wrong Password");
+                
+            }
+            LoginResponseDTO responce = new LoginResponseDTO()
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserId=user.Id
+
+
+            };
+            DateTime expiry = DateTime.UtcNow.AddHours(4);
+            responce.ExpiresAt = expiry;
+            responce.Token = GenerateToken(user);
+            return responce;
+
+        }
+        public string GenerateToken(User loginuser)
+        {
+            var key = _Configuration.GetValue<string>("JwtTokenKey");
+
+            var handler = new JwtSecurityTokenHandler();
+            var TokenDescriptor = new SecurityTokenDescriptor()
+            {
+              Subject = new ClaimsIdentity(new Claim[]
+              {
+                  new Claim(ClaimTypes.Name, loginuser.FirstName),
+                  new Claim(ClaimTypes.Role, "Admin"),
+                  new Claim(JwtRegisteredClaimNames.Sub, loginuser.Id.ToString()),
+                  new Claim(JwtRegisteredClaimNames.Email, loginuser.Email),
+
+
+
+              }),
+              Expires = DateTime.UtcNow.AddHours(4),
+              SigningCredentials= new (new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),SecurityAlgorithms.HmacSha256),
+             
+            };
+            var securityToken =  handler.CreateToken(TokenDescriptor);
+            var Token= handler.WriteToken(securityToken);
+            return Token.ToString();
+           
+        }
+
     }
 }
