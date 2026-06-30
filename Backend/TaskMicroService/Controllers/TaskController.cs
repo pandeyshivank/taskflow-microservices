@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskMicroService.ModelDTOs;
 using TaskMicroService.Services.Interfaces;
@@ -6,6 +7,7 @@ using TaskMicroService.Services.Interfaces;
 namespace TaskMicroService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class TaskController : ControllerBase
     {
