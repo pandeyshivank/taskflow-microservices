@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskMicroService.ModelDTOs;
@@ -24,6 +25,13 @@ namespace TaskMicroService.Controllers
 
         public async Task<ActionResult<TaskResponseDTO>> CreateTaskAsync([FromBody] TaskRequestDTO request)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var username = User.FindFirst(ClaimTypes.Name)?.Value;
             return Ok( await _taskService.CreateTaskAsync(request));
         }
         [HttpPut("UpdateTask")]

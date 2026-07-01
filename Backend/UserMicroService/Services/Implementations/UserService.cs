@@ -116,8 +116,10 @@ namespace UserMicroService.Services.Implementations
               {
                   new Claim(ClaimTypes.Name, loginuser.FirstName),
                   new Claim(ClaimTypes.Role, "Admin"),
+                  new Claim(ClaimTypes.NameIdentifier, loginuser.Id.ToString()),
                   new Claim(JwtRegisteredClaimNames.Sub, loginuser.Id.ToString()),
                   new Claim(JwtRegisteredClaimNames.Email, loginuser.Email),
+                  
 
 
 
