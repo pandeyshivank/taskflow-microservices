@@ -50,9 +50,6 @@ builder.Services.AddSwaggerGen(op=>
           Scheme="bearer",
           Name ="bearer",
           In=ParameterLocation.Header,
-
-         
-
         },
         new List<string>()
         }
@@ -75,9 +72,6 @@ builder.Services.AddAuthentication(option =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JwtTokenKey")))
 
     };
-
-
-    
     });
   
 builder.Services.AddDbContext<TaskDbContext>(
@@ -96,11 +90,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
-
-
-
 app.MapControllers();
-
 app.Run();

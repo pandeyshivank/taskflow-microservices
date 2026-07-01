@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NotificationMicroService.Entities;
@@ -8,6 +9,7 @@ using NotificationMicroService.Services.Interfaces;
 namespace NotificationMicroService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class NotificationController : ControllerBase
     {
