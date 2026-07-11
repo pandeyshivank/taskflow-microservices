@@ -6,6 +6,10 @@ using Microsoft.OpenApi.Models;
 using NotificationMicroService.AutoMapper;
 using NotificationMicroService.Data;
 using NotificationMicroService.Entities;
+using NotificationMicroService.RabbitMQ.HostedServices;
+using NotificationMicroService.RabbitMQ.Implementations;
+using NotificationMicroService.RabbitMQ.Interfaces;
+using NotificationMicroService.RabbitMQ.Settings;
 using NotificationMicroService.Repositories.Implementations;
 using NotificationMicroService.Repositories.Interfaces;
 using NotificationMicroService.Services.Implementations;
@@ -23,6 +27,9 @@ builder.Services.AddDbContext<NotificationDbContext>(
 builder.Services.AddAutoMapper(typeof(NotificationAutoMapper));
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddHostedService<NotificationConsumerHostedService>();
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQSettings"));
+builder.Services.AddSingleton<IMessageConsumer, MessageConsumer>();
 builder.Services.AddAuthentication(option =>
 {
 

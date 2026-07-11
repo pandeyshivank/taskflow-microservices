@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskMicroService", "TaskMic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationMicroService", "NotificationMicroService\NotificationMicroService.csproj", "{58C6BA78-288E-48BD-A02F-C21A17B90CBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFlowServices.ApiGateway", "TaskFlowServices.ApiGateway\TaskFlowServices.ApiGateway.csproj", "{722E3E69-AFF3-43FD-A023-30B71C8B1CD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{58C6BA78-288E-48BD-A02F-C21A17B90CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58C6BA78-288E-48BD-A02F-C21A17B90CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58C6BA78-288E-48BD-A02F-C21A17B90CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{722E3E69-AFF3-43FD-A023-30B71C8B1CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{722E3E69-AFF3-43FD-A023-30B71C8B1CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{722E3E69-AFF3-43FD-A023-30B71C8B1CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{722E3E69-AFF3-43FD-A023-30B71C8B1CD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

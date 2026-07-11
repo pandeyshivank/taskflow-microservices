@@ -8,6 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TaskMicroService.AutoMapper;
 using TaskMicroService.Data;
+using TaskMicroService.RabbitMQ.Implementations;
+using TaskMicroService.RabbitMQ.Interfaces;
+using TaskMicroService.RabbitMQ.Settings;
 using TaskMicroService.Services.Implementations;
 using TaskMicroService.Services.Interfaces;
 using TaskMicroService.TaskRepositories.Implementations;
@@ -23,7 +26,11 @@ builder.Services.AddAutoMapper(typeof(TaskMappingConfig));
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQSettings"));
+builder.Services.AddScoped<IMessagePublisher, RabbitMQMessagePublisher>();
 builder.Services.AddEndpointsApiExplorer();
+
+
 builder.Services.AddSwaggerGen(op=>
 {
 

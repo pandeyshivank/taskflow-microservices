@@ -4,6 +4,8 @@ using TaskMicroService.Entities;
 using TaskMicroService.ModelDTOs;
 using TaskMicroService.Services.Interfaces;
 using TaskMicroService.TaskRepositories.Interfaces;
+using TaskMicroService.RabbitMQ.Interfaces;
+using Azure;
 
 namespace TaskMicroService.Services.Implementations
 {
@@ -12,23 +14,35 @@ namespace TaskMicroService.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ITaskRepository _taskRepository;
+        private readonly IMessagePublisher _messagePublisher;
 
-        public TaskService(IMapper mapper, IConfiguration configuration, ITaskRepository taskRepository)
+        public TaskService(IMapper mapper, IConfiguration configuration, ITaskRepository taskRepository, IMessagePublisher messagePublisher)
         {
             _mapper = mapper;
             _configuration = configuration;
             _taskRepository = taskRepository;
+            _messagePublisher = messagePublisher;
 
         }
         public async Task<TaskResponseDTO> CreateTaskAsync(TaskRequestDTO request)
         {
             if (request == null) { throw new InvalidOperationException("please enter task data"); }
             var taskitem=   _mapper.Map<TaskItem>(request);
-            var responce= await _taskRepository.CreateTaskAsync(taskitem);
-            if (responce == null) {
+            var response = await _taskRepository.CreateTaskAsync(taskitem);
+            if (response == null) {
                 throw new NullReferenceException(); 
             }
-            return _mapper.Map<TaskResponseDTO>(responce); 
+
+            await _messagePublisher.PublishTaskCreatedAsync(
+            new RabbitMQ.Models.TaskCreatedEventModel
+            {
+                TaskId = response.Id,
+                UserId = response.UserId,
+                Title = response.Title,
+                Description = response.Description,
+                CreatedAt = DateTime.UtcNow
+            });
+            return _mapper.Map<TaskResponseDTO>(response); 
 
 
         }

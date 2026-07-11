@@ -1,0 +1,6 @@
+@TaskFlowServices.ApiGateway_HostAddress = http://localhost:5033
+
+GET {{TaskFlowServices.ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
