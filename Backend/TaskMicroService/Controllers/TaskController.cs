@@ -25,13 +25,8 @@ namespace TaskMicroService.Controllers
 
         public async Task<ActionResult<TaskResponseDTO>> CreateTaskAsync([FromBody] TaskRequestDTO request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
-
-            var username = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            request.UserId = userId;
             return Ok( await _taskService.CreateTaskAsync(request));
         }
         [HttpPut("UpdateTask")]
@@ -40,6 +35,8 @@ namespace TaskMicroService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<TaskResponseDTO>> UpdateTaskAsync([FromBody] TaskRequestDTO request)
         {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            request.UserId = userId;
             return Ok(await _taskService.UpdateTaskAsync(request));
         }
         [HttpDelete("DeleteTask/{id:guid}")]
@@ -61,12 +58,13 @@ namespace TaskMicroService.Controllers
             return Ok(responce);
         }
 
-        [HttpGet("GetAllUserTask/{userId:guid}")]
+        [HttpGet("GetAllUserTask")]
         [ProducesResponseType(typeof(List<TaskResponseDTO>), 200)]
         [ProducesResponseType(statusCode: 400)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<TaskResponseDTO>>> GetAllTaskByUserIdAsync([FromRoute] Guid userId)
+        public async Task<ActionResult<List<TaskResponseDTO>>> GetAllTaskByUserIdAsync()
         {
+          var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
          return Ok( await _taskService.GetAllTaskByUserIdAsync(userId));
         }
     }
