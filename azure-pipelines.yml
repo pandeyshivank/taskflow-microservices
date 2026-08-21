@@ -55,7 +55,7 @@ stages:
         projects: '$(projectRoot)'
         arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)/App'
 
-    - task: PublishBuildArtifacts@2
+    - task: PublishBuildArtifacts@1
       displayName: 'Upload Artifact'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/App'
